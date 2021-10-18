@@ -2,6 +2,8 @@ import React from 'react'
 import { View, Text } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
 
+import { screens } from '../RouteItems'
+
 const Stack = createStackNavigator()
 
 const Home = () => (
@@ -15,7 +17,7 @@ const HomeStackNavigator = () => {
     <Stack.Navigator screenOptions={{
       headerShown: false,
     }}>
-      <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name={screens.Home} component={Home} />
     </Stack.Navigator>
   )
 }

@@ -3,27 +3,30 @@ import { View, StyleSheet, Image, Text, TouchableOpacity } from 'react-native'
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer'
 import Icon from 'react-native-vector-icons/FontAwesome'
 
-import MyRewardsStackNavigator from './stack-navigators/MyRewardsStackNavigator'
-import LocationsStackNavigator from './stack-navigators/LocationsStackNavigator'
 import BottomTabNavigator from './BottomTabNavigator'
+import { routes, screens } from './RouteItems'
 
 const Drawer = createDrawerNavigator()
 
 const CustomDrawerContent = (props) => {
+  const currentRouteName = props.nav()?.getCurrentRoute()?.name
   return (
     <DrawerContentScrollView {...props}>
       {
-        Object.entries(props.descriptors).map(([key, descriptor], index) => {
-          const focused = index === props.state.index
+        routes.filter(route => route.showInDrawer).map((route) => {
+          const focusedRoute = routes.find(r => r.name === currentRouteName)
+          const focused = focusedRoute ?
+            route.name === focusedRoute?.focusedRoute :
+            route.name === screens.HomeStack
           return (
             <DrawerItem
-              key={key}
+              key={route.name}
               label={() => (
                 <Text style={focused ? styles.drawerLabelFocused : styles.drawerLabel}>
-                  {descriptor.options.title}
+                  {route.title}
                 </Text>
               )}
-              onPress={() => descriptor.navigation.navigate(descriptor.route.name)}
+              onPress={() => props.navigation.navigate(route.name)}
               style={[styles.drawerItem, focused ? styles.drawerItemFocused : null]}
             />
           )
@@ -33,7 +36,7 @@ const CustomDrawerContent = (props) => {
   )
 }
 
-const DrawerNavigator = () => {
+const DrawerNavigator = ({ nav }) => {
   return (
     <Drawer.Navigator
       screenOptions={({ navigation }) => ({
@@ -47,9 +50,9 @@ const DrawerNavigator = () => {
           </TouchableOpacity>
         ),
       })}
-      drawerContent={(props) => <CustomDrawerContent {...props} />}
+      drawerContent={(props) => <CustomDrawerContent {...props} nav={nav} />}
     >
-      <Drawer.Screen name="HomeTabs" component={BottomTabNavigator} options={{
+      <Drawer.Screen name={screens.HomeTab} component={BottomTabNavigator} options={{
         title: 'Home',
         headerTitle: () => <Image source={require('../assets/hotel_logo.jpg')} />,
         headerRight: () => (
@@ -57,14 +60,6 @@ const DrawerNavigator = () => {
             <Icon name="bell" size={20} color="#fff" />
           </View>
         ),
-      }}/>
-      <Drawer.Screen name="MyRewardsStack" component={MyRewardsStackNavigator} options={{
-        title: 'My Rewards',
-        headerTitle: () => <Text style={styles.headerTitle}>My Rewards</Text>,
-      }}/>
-      <Drawer.Screen name="LocationsStack" component={LocationsStackNavigator} options={{
-        title: 'Locations',
-        headerTitle: () => <Text style={styles.headerTitle}>Our Locations</Text>,
       }}/>
     </Drawer.Navigator>
   )

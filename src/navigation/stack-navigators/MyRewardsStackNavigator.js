@@ -2,6 +2,8 @@ import React from 'react'
 import { View, Text } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
 
+import { screens } from '../RouteItems'
+
 const Stack = createStackNavigator()
 
 const MyRewards = () => (
@@ -15,7 +17,7 @@ const MyRewardsStackNavigator = () => {
     <Stack.Navigator screenOptions={{
       headerShown: false,
     }}>
-      <Stack.Screen name="MyRewards" component={MyRewards} />
+      <Stack.Screen name={screens.MyRewards} component={MyRewards} />
     </Stack.Navigator>
   )
 }
